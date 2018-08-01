@@ -1,13 +1,24 @@
 package com.luvinat3h;
 
 
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 
 public class Server {
 	private ServerSocket server;
@@ -16,6 +27,13 @@ public class Server {
 	private String ipClient,nameClient;
 	public static final int PORT = 5555;
 	private Socket client;
+	FileOutputStream fout;
+    BufferedInputStream bis;
+    BufferedReader br;
+    Scanner sc;
+    BufferedReader br1;
+    BufferedInputStream bis1;
+    String filename;
 
 	public Server() {
 		try {
@@ -114,6 +132,54 @@ public class Server {
 
 	public String getNameClient() {
 		return nameClient;
+	}
+
+	public void receiveImg() {
+		new Thread() {
+            @Override
+            public void run() {
+            	try{
+                    filename=br1.readLine();
+
+                    System.out.println(filename);
+                    fout=new FileOutputStream(filename);
+                    sc=new Scanner(client.getInputStream());
+                    int size=sc.nextInt();
+                    System.out.println("file created");
+                    int ch=bis.read();
+                    System.out.println(ch);
+                    System.out.println("after bis.read()");
+
+                    while(size>0)
+                    {
+                        fout.write(ch);
+                        System.out.println(ch);
+                        ch=bis1.read();
+                        size--;
+                    }
+
+                    System.out.println(ch);
+                    System.out.println("data written");
+                    PrintWriter pw1=new PrintWriter(client.getOutputStream(),true);
+                    pw1.println("DATA UPLOADED SUCCESSFULLY");
+
+
+                }catch(Exception e)
+                {
+                    System.out.println("Error"+e);
+                }finally{
+                    if(fout!=null)
+                        try {
+                            fout.close();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                    System.out.println("IN Finally");
+                }
+            }
+        }.start();
 	}
 
 }

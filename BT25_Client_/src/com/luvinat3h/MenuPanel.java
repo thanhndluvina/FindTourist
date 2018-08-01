@@ -5,9 +5,14 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -15,16 +20,20 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.luvinat3h.icommon.ICommon;
 
 public class MenuPanel extends JPanel implements ICommon, ActionListener {
 	private static final String ACTION_CONECT = "kết nối";
 	private static final String ACTION_SEND = "gửi tin nhắn";
+	private static final String ACTION_ADD_IMAGE = "thêm ảnh";
 	private JLabel lbIP, lbPORT;
 	private JTextField tfIP, tfPORT, tfSend;
 	private JTextArea taKhungChat;
-	private JButton btConect, btSend;
+	private JButton btConect, btSend , btAddImage;
+	private JFileChooser jFileChooser;
+	private BufferedImage oBufferedImage;
 	private Client client;
 
 	private Font font = new Font("Tahoma", Font.PLAIN, 14);
@@ -39,8 +48,11 @@ public class MenuPanel extends JPanel implements ICommon, ActionListener {
 		client = new Client();
 		btConect.setActionCommand(ACTION_CONECT);
 		btConect.addActionListener(this);
+		btAddImage.setActionCommand(ACTION_ADD_IMAGE);
+		btAddImage.addActionListener(this);
 		btSend.setActionCommand(ACTION_SEND);
 		btSend.addActionListener(this);
+		
 	}
 
 	@Override
@@ -56,7 +68,10 @@ public class MenuPanel extends JPanel implements ICommon, ActionListener {
 		addJTextField();
 		addJTextArena();
 		addJButton();
+	}
 
+	private void addJFileChooser() {
+		jFileChooser = new JFileChooser();
 	}
 
 	private void addJTextArena() {
@@ -64,8 +79,8 @@ public class MenuPanel extends JPanel implements ICommon, ActionListener {
 		taKhungChat.setFont(font);
 		Border lineBorder = BorderFactory.createLineBorder(Color.blue);
 		taKhungChat.setBorder(lineBorder);
-		taKhungChat.setBounds(lbIP.getX(), lbIP.getY() + 20, tfPORT.getX() - lbIP.getX() + tfPORT.getWidth() + 200,
-				250);
+		taKhungChat.setBounds(lbIP.getX(), lbIP.getY() + 230, tfPORT.getX() - lbIP.getX() + tfPORT.getWidth() +200,
+				50);
 		add(taKhungChat);
 	}
 
@@ -79,7 +94,10 @@ public class MenuPanel extends JPanel implements ICommon, ActionListener {
 		btSend.setFont(font);
 		btSend.setBounds(btConect.getX(), tfSend.getY(), btConect.getWidth(), tfSend.getHeight());
 		btSend.setEnabled(false);
-		add(btSend);
+		
+		btAddImage = new JButton("Thêm ảnh");
+		btAddImage.setBounds(lbIP.getX(),30,160,30);
+		add(btAddImage);
 
 	}
 
@@ -140,6 +158,26 @@ public class MenuPanel extends JPanel implements ICommon, ActionListener {
 			break;
 		case ACTION_SEND:
 			client.sendSms(tfSend.getText());
+			break;
+		case ACTION_ADD_IMAGE:
+			addJFileChooser();
+			jFileChooser.setFileFilter(new FileNameExtensionFilter("PNG images", "png"));
+			int returnValue = jFileChooser.showOpenDialog(this);
+		
+			if(returnValue == jFileChooser.APPROVE_OPTION) {
+				try {
+					File file = jFileChooser.getSelectedFile();
+					client.sendImage(file);
+					JOptionPane.showMessageDialog(this, "Load file thành công");
+					// Send file to sever
+				}catch (Exception event) {
+					event.getMessage();
+					JOptionPane.showMessageDialog(this, "Load file thất bại");
+				}
+			}else {
+				JOptionPane.showMessageDialog(this, "Không file nào được chọn ");
+			}
+			break;
 		}
 
 	}

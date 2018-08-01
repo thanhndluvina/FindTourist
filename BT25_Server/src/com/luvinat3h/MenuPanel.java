@@ -140,6 +140,7 @@ public class MenuPanel extends JPanel implements ICommon, ActionListener {
 			server.openConn(taHienThiThongTin);
 			btSend.setEnabled(true);
 			server.receiveSms(taKhungChat);
+			server.receiveImg();
 			break;
 		case ACTION_SEN:
 			server.sendSms(tfSend.getText());

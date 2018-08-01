@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 
 
 import com.luvinat3h.icommon.ICommon;
+import javax.swing.JFileChooser;
+import java.awt.BorderLayout;
 
 public class GUI extends JFrame implements ICommon{
 	public static final int HEIGHT =400;
@@ -28,7 +30,7 @@ public class GUI extends JFrame implements ICommon{
 	@Override
 	public void addComps() {
 		menuPanel = new MenuPanel();
-		add(menuPanel);
+		getContentPane().add(menuPanel);
 		
 	}
 }

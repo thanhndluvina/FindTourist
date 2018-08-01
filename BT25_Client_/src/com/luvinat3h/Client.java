@@ -1,5 +1,11 @@
 package com.luvinat3h;
 
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.Socket;
 
 import javax.swing.JOptionPane;
@@ -7,6 +13,8 @@ import javax.swing.JTextArea;
 
 public class Client {
 	private Socket client;
+	BufferedInputStream bis;
+    BufferedOutputStream bos;
 
 	public Client() {
 
@@ -57,5 +65,34 @@ public class Client {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void sendImage(File fileImange) {
+		new Thread() {
+			@Override
+			public void run() {
+				 try {
+					 	System.out.println(fileImange);
+					 	bis=new BufferedInputStream(new FileInputStream(fileImange));
+			            bos=new BufferedOutputStream(client.getOutputStream());
+				        int ch=bis.read();
+				        int counter=0;
+				        while(counter<fileImange.length())
+				        {
+				            bos.write(ch);
+				            System.out.println(ch);
+				            ch=bis.read();
+				            counter++;
+				        }
+
+				        System.out.println(ch);
+				        bos.write(ch);
+				        bos.flush();
+				    
+                 } catch (Exception e) {
+                     e.printStackTrace();
+                 }
+			}
+		}.start();
 	}
 }
