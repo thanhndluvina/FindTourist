@@ -72,7 +72,6 @@ public class Client {
 			@Override
 			public void run() {
 				 try {
-					 	System.out.println(fileImange);
 					 	bis=new BufferedInputStream(new FileInputStream(fileImange));
 			            bos=new BufferedOutputStream(client.getOutputStream());
 				        int ch=bis.read();
@@ -80,12 +79,10 @@ public class Client {
 				        while(counter<fileImange.length())
 				        {
 				            bos.write(ch);
-				            System.out.println(ch);
 				            ch=bis.read();
 				            counter++;
 				        }
 
-				        System.out.println(ch);
 				        bos.write(ch);
 				        bos.flush();
 				    

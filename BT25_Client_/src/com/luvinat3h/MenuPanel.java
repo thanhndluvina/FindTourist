@@ -151,7 +151,7 @@ public class MenuPanel extends JPanel implements ICommon, ActionListener {
 				int PORT = Integer.parseInt(tfPORT.getText());
 				client.connect(ip, PORT);
 				btSend.setEnabled(true);
-				client.receiveSms(taKhungChat);
+//				client.receiveSms(taKhungChat);
 			} catch (Exception e2) {
 				JOptionPane.showMessageDialog(this, "Không đúng PORT hoặc IP");
 			}
